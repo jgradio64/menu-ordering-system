@@ -1,26 +1,24 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+# order_text = input("Please enter an order: \t")
+from modules.order import Order
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def print_menu():
+    text = input("Please enter an order: \t")
+    return text
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def extract_info(text):
+    order = text.split(" ")
+    meal_info = order[0].lower()
+    food_info = order[1].split(",")
+    return meal_info, food_info
 
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+order_input = "Breakfast 1,2,3,3,3"
+meal, foods = extract_info(order_input)
+new_order = Order(meal, foods)
 
-class Order:
-    def __init__(self, mealtype, *items):
-        self.meal = mealtype
-        try:
-            self.items = dict(items)
-        except TypeError:
-            # Change this to be more specific as it progresses
-            raise Exception("One or more of the item ID's is not valid")
+new_order.build_meal()
+new_order.print_order()
+new_order.print_menu()
+new_order.validate_order()
