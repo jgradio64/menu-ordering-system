@@ -21,7 +21,7 @@ class Meal:
     class Dish:
         def __init__(self, name, type, rep, mandated):
             self.dish_name = name
-            self.dish_type = type
+            self.course = type
             self.repeatable = rep
             self.required = mandated
 
