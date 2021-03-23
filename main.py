@@ -19,6 +19,3 @@ meal, foods = extract_info(order_input)
 new_order = Order(meal, foods)
 
 new_order.build_meal()
-new_order.print_order()
-new_order.print_menu()
-new_order.validate_order()

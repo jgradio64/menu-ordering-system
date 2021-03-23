@@ -11,27 +11,49 @@ class Order:
         self.item_queue = PriorityQueue()
         for item_id in ids:
             self.item_queue.put(item_id)
-        self.num_of_items = {}
+        self.num_ordered = {}
 
     # Make sure the number of items for a dish is permitted
     def validate_order(self):
         # For key in meals dictionary
-        for dish in self.meal.meals:
-            print("Dish name: {0} \n Number of times ordered {1}"
-                  .format(self.meal.meals[dish].dish_name, self.num_of_items[dish]))
+        for key in self.meal.meals:
+            dish = self.meal.meals[key]
+            flag = True
+
+            # Check to see if the dish is required
+            if dish.is_required():
+                if self.num_ordered[key] == 0:
+                    print("Unable to process: {0} is missing".format(dish.course))
+                    # Breaks the current order, exits validation method after printing error message
+                    flag = False
+
+            # Checks to see if a dish is repeatable
+            if dish.is_repeatable():
+                continue
+            elif self.num_ordered[key] != 1:
+                print("Unable to process: {0} can only be ordered once".format(dish.dish_name))
+                # Breaks the current order, exits validation method after printing error message
+                flag = False
+
+        return flag
 
     # So get the number of items here
     # Have to validate with the number of items that can be ordered.
-    def print_menu(self):
+    def record_num_dishes(self):
         # Gets the item id and records the number of times it appears in the input
         for menu_item in self.item_queue.queue:
             i = int(menu_item)
-            if i in self.num_of_items:
+            if i in self.num_ordered:
                 # If the item is in the dictionary, it updates the number of items
-                self.num_of_items[i] = self.num_of_items[i] + 1
+                self.num_ordered[i] = self.num_ordered[i] + 1
             else:
                 # Sets the number of items if no in the dictionary
-                self.num_of_items[i] = 1
+                self.num_ordered[i] = 1
+        for key in self.meal.meals:
+            if key in self.num_ordered:
+                continue
+            else:
+                self.num_ordered[key] = 0
 
     # Runs a function based upon the mealType variable
     def build_meal(self):
@@ -42,13 +64,29 @@ class Order:
         elif self.mealType == "dinner":
             self.build_dinner()
 
+        self.record_num_dishes()
+        self.print_order()
+
     def print_order(self):
-        try:
+        is_valid = self.validate_order()
+        if is_valid:
+            output_string = ""
             # For key in meals dictionary
-            for dish in self.meal.meals:
-                print(self.meal.meals[dish].dish_name)
-        except TypeError:
-            raise Exception("Dish number not working")
+            for key in self.meal.meals:
+                dish = self.meal.meals[key]
+                if output_string == "":
+                    dish_string = self.build_dish_string(dish, key)
+                    output_string += "{0}".format(dish_string)
+                else:
+                    dish_string = self.build_dish_string(dish, key)
+                    output_string += ", {0}".format(dish_string)
+            print(output_string)
+
+    def build_dish_string(self, dish, key):
+        if self.num_ordered[key] > 1:
+            return "{0}({1})".format(dish.dish_name, self.num_ordered[key])
+        else:
+            return "{0}".format(dish.dish_name)
 
     def build_breakfast(self):
         self.meal.add_dish("Eggs", 1, "Main", False, True)
@@ -56,7 +94,7 @@ class Order:
         self.meal.add_dish("Coffee", 3, "Drink", True, False)
 
     def build_lunch(self):
-        self.meal.add_dish("Sandwich", 1, "Main",  False, True)
+        self.meal.add_dish("Sandwich", 1, "Main", False, True)
         self.meal.add_dish("Chips", 2, "Side", True, True)
         self.meal.add_dish("Soda", 3, "Drink", False, True)
 
