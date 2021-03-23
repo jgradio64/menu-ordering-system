@@ -31,7 +31,7 @@ class Order:
             if dish.is_repeatable():
                 continue
             elif self.num_ordered[key] != 1:
-                print("Unable to process: {0} can only be ordered once".format(dish.dish_name))
+                raise Error("Unable to process: {0} can only be ordered once".format(dish.dish_name))
                 # Breaks the current order, exits validation method after printing error message
                 flag = False
 
@@ -59,28 +59,24 @@ class Order:
     def build_meal(self):
         if self.mealType == "breakfast":
             self.build_breakfast()
+            self.record_num_dishes()
+            self.print_order()
         elif self.mealType == "lunch":
             self.build_lunch()
+            self.record_num_dishes()
+            self.print_order()
         elif self.mealType == "dinner":
             self.build_dinner()
-
-        self.record_num_dishes()
-        self.print_order()
+            self.record_num_dishes()
+            self.print_order()
+        else:
+            print("Please enter a valid meal type")
 
     def print_order(self):
-        is_valid = self.validate_order()
-        if is_valid:
-            output_string = ""
-            # For key in meals dictionary
-            for key in self.meal.meals:
-                dish = self.meal.meals[key]
-                if output_string == "":
-                    dish_string = self.build_dish_string(dish, key)
-                    output_string += "{0}".format(dish_string)
-                else:
-                    dish_string = self.build_dish_string(dish, key)
-                    output_string += ", {0}".format(dish_string)
-            print(output_string)
+        # See if the order is valid
+        if self.validate_order():
+            # Prints the final output to the user
+            print(self.build_order_string())
 
     def build_dish_string(self, dish, key):
         if self.num_ordered[key] > 1:
@@ -88,17 +84,38 @@ class Order:
         else:
             return "{0}".format(dish.dish_name)
 
+    def build_order_string(self):
+        output_string = ""
+        # For key in meals dictionary
+        for key in self.meal.meals:
+            dish = self.meal.meals[key]
+            # If the string is initially empty
+            if output_string == "":
+                dish_string = self.build_dish_string(dish, key)
+                output_string += "{0}".format(dish_string)
+            # If a dish is already in the string
+            else:
+                dish_string = self.build_dish_string(dish, key)
+                output_string += ", {0}".format(dish_string)
+        return output_string
+
+    # Builds the Breakfast menu
     def build_breakfast(self):
+        # Adds the Meal's Dish objects
         self.meal.add_dish("Eggs", 1, "Main", False, True)
         self.meal.add_dish("Toast", 2, "Side", False, True)
         self.meal.add_dish("Coffee", 3, "Drink", True, False)
 
+    # Builds the Lunch menu
     def build_lunch(self):
+        # Adds the Meal's Dish objects
         self.meal.add_dish("Sandwich", 1, "Main", False, True)
         self.meal.add_dish("Chips", 2, "Side", True, True)
         self.meal.add_dish("Soda", 3, "Drink", False, True)
 
+    # Builds the Dinner menu
     def build_dinner(self):
+        # Adds the Meal's Dish objects
         self.meal.add_dish("Steak", 1, "Main", False, True)
         self.meal.add_dish("Potatoes", 2, "Side", False, True)
         self.meal.add_dish("Wine", 3, "Drink", False, False)
