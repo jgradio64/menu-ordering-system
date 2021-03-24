@@ -1,5 +1,5 @@
+# Imports
 import unittest
-# from src.main import extract_info
 from src.order import Order
 
 

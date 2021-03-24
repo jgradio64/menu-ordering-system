@@ -1,5 +1,5 @@
-# order_text = order_input("Please enter an order: \t")
-from order import Order
+# Imports
+from src.order import Order
 
 done = False
 
