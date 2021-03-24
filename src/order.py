@@ -1,5 +1,5 @@
 from queue import PriorityQueue
-from src.meal_class import Meal
+from meal_class import Meal
 
 
 # This class holds the oder information

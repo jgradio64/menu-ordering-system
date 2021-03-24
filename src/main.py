@@ -1,5 +1,5 @@
 # order_text = order_input("Please enter an order: \t")
-from src.order import Order
+from order import Order
 
 done = False
 
@@ -10,8 +10,11 @@ def print_menu():
     return text
 
 
+print("To exit input 'Done'")
+
 while not done:
     order_input = print_menu()
+    if order_input.lower() == "done":
+        break
     new_order = Order()
-
     print(new_order.build_order(order_input))
