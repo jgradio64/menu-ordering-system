@@ -1,16 +1,24 @@
 class Meal:
     def __init__(self):
-        # Create a dictionary to hold meal items
+        # Create a dictionary to hold meal objects
         self.dishes = {}
-        self.water_required = False
 
-    # Adds a dish to the menu
-    def add_dish(self, dish_name, dish_type, repeatable, needed):
-        new_dish = self.Dish(dish_name, dish_type, repeatable, needed)
+    def add_dish(self, dish_name, dish_type, repeatable, required):
+        """
+        Adds a dish to the menu
+        :param dish_name:
+        :param dish_type: 
+        :param repeatable: 
+        :param required: 
+        :return: 
+        """
+        new_dish = self.Dish(dish_name, dish_type, repeatable, required)
         self.dishes[dish_type] = new_dish
 
-    # Inner class dish holds
     class Dish:
+        """
+        Inner class dish holds the information about a Meal's dish
+        """
         def __init__(self, name, dish_type, rep, mandated):
             self.dish_name = name
             self.course = dish_type
